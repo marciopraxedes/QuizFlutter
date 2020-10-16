@@ -1,20 +1,30 @@
 import 'package:flutter/material.dart';
-import './questao.dart';
-import './resposta.dart';
+import './resultado.dart';
+import './questionario.dart';
 
 main() => runApp(PerguntaApp());
 
 class _PerguntaAppState extends State<PerguntaApp> {
   var _perguntaSelecionada = 0;
+  var _pontuacaoTotal = 0;
   final _perguntas = const [
     //List<Map<String, Object>>
     {
       'texto': 'Qual é a sua cor favorita?',
-      'respostas': ['Azul', 'Preto', 'Verde', 'Amarelo']
+      'respostas': [
+        {'texto': 'Azul', 'pontuacao': 0},
+        {'texto': 'Preto', 'pontuacao': 0},
+        {'texto': 'Verde', 'pontuacao': 10},
+        {'texto': 'Amarelo', 'pontuacao': 0}
+      ]
     },
     {
       'texto': 'Qual é o seu animal favorito?',
-      'respostas': ['Cachorro', 'Gato', 'Arara']
+      'respostas': [
+        {'texto': 'Cachorro', 'pontuacao': 0},
+        {'texto': 'Gato', 'pontuacao': 10},
+        {'texto': 'Arara', 'pontuacao': 0}
+      ]
     }
   ];
 
@@ -22,52 +32,33 @@ class _PerguntaAppState extends State<PerguntaApp> {
     return _perguntaSelecionada < _perguntas.length;
   }
 
-  void _responder() {
+  void _responder(int pontuacao) {
     setState(() {
       _perguntaSelecionada++;
+      _pontuacaoTotal += pontuacao;
     });
-  }
 
-  void _voltar() {
-    setState(() {
-      _perguntaSelecionada--;
-    });
+    print(_pontuacaoTotal);
   }
 
   @override
   Widget build(BuildContext context) {
-    List<String> respostas = temPerguntaSelecionada
-        ? _perguntas[_perguntaSelecionada]['respostas']
-        : null;
-
     //for (var textResp in respostas) {
     //  listWidget.add(Resposta(textResp, _responder));
     //}
 
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Perguntas'),
-        ),
-        body: temPerguntaSelecionada
-            ? Column(
-                children: [
-                  Questao(_perguntas[_perguntaSelecionada]['texto']),
-                  ...respostas
-                      .map((t) => Resposta(t, _responder))
-                      .toList(), //Três pontinhos se chama 'spread' e serve para preencher percorrendo uma lista
-                ],
-              )
-            : Center(
-                child: RaisedButton(
-                  textColor: Colors.white,
-                  color: Colors.blue,
-                  onPressed: _voltar,
-                  child: Text('Voltar'),
-                ),
-              ),
+        home: Scaffold(
+      appBar: AppBar(
+        title: Text('Perguntas'),
       ),
-    );
+      body: temPerguntaSelecionada
+          ? Questionario(
+              perguntas: _perguntas,
+              perguntaSelecionada: _perguntaSelecionada,
+              responder: _responder)
+          : Resultado(_pontuacaoTotal),
+    ));
   }
 }
 
