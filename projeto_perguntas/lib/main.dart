@@ -37,8 +37,13 @@ class _PerguntaAppState extends State<PerguntaApp> {
       _perguntaSelecionada++;
       _pontuacaoTotal += pontuacao;
     });
+  }
 
-    print(_pontuacaoTotal);
+  void _reiniciar() {
+    setState(() {
+      _perguntaSelecionada = 0;
+      _pontuacaoTotal = 0;
+    });
   }
 
   @override
@@ -57,7 +62,7 @@ class _PerguntaAppState extends State<PerguntaApp> {
               perguntas: _perguntas,
               perguntaSelecionada: _perguntaSelecionada,
               responder: _responder)
-          : Resultado(_pontuacaoTotal),
+          : Resultado(_pontuacaoTotal, _reiniciar),
     ));
   }
 }
